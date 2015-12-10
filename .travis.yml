@@ -2,4 +2,10 @@ language: java
 jdk:
 - oraclejdk8
 notifications:
- email: false
+  email: false
+deploy:
+  provider: heroku
+  api_key:
+    secure: PCIt1PJgBt4g7buCfjlCVKs8FuRynkjJ9yDEnpST2xvZ4pLu5ux5BjPH3cZzcLjbPEHG6v+nzI03GoGlBZDDGeeAOvORX+xpHSBB4j/KLJmgAmKfR4ACRHBBxXV7s+vsQPbfFrSLf9N+qRtTwcy+N5O7cTlVQ4aUtXq7tuKghNKAhNxAy+kvlYpTxBlXRoOoELCx6DvmVmYYxU7XmXpk3KYJHSBvAgD1i0R9gV32zVdppe+crji+lNBuBU2BHrXiOTH3j1aYa+kGze1FSGwXBSR0YU0+xaDqAaJ4hAKi/VEUHC9CceuLRHFW5f+ijKuUk83mihZof9WonGRP8fFCfBd3Jmolo2ShtwuY0YGBnr0LhfCPH7HlwExcVKpCjE+zlUig0nfZ7wWeTIeCS3Bx6MarRd72JOHXfpM40TfaHZkkX/XoobDbBXjApXoekY5RLj1DHugfuWqPHk9nS8Zf7yfgVNqV/2kqDIMLsluZJX5pWHiW+mUKO7pQLQ9dhNn3Oj2Rkx07Sgw54Dcem8Z0yTHNxEx1o+OqtNK0r3WaOsyH/MOJNwn8haoroijL9oTMFQBBwdALhYy1NtDCoILXABBF21VtBT56rW//7YLV7jWwNLYgMfDo98+1CSgVWN70Z/mWiSW4dBClN/BPSzCTpKfZv9NCW9LuhIP4zFg1+ds=
+  app: stark-wildwood-1703
+  on: production
