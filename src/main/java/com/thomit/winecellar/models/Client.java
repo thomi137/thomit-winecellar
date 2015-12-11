@@ -14,7 +14,6 @@ public class Client {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	
-	String tenantId;
 	String clientId;
 	String clientSecret;
 	String resourceIds;
@@ -38,14 +37,6 @@ public class Client {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getTenantId() {
-		return tenantId;
-	}
-
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
 	}
 
 	public String getClientId() {
