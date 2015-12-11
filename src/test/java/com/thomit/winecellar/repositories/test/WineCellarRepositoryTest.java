@@ -77,13 +77,13 @@ public class WineCellarRepositoryTest {
 
 	@Test
 	public void testWineEndpointGetStatusOk() throws Exception {
-		this.mockMvc.perform(get("/wine"))
+		this.mockMvc.perform(get("/api/wine"))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
 	public void testWineFound() throws Exception {
-		this.mockMvc.perform(get("/wine/" + this.wineList.get(0).getId()).contentType(contentType).accept(contentType))
+		this.mockMvc.perform(get("/api/wine/" + this.wineList.get(0).getId()).contentType(contentType).accept(contentType))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(contentType))
 		.andExpect(jsonPath("$.name", is(this.wineList.get(0).getName())))
@@ -95,7 +95,7 @@ public class WineCellarRepositoryTest {
 	@Test
 	public void createWine() throws Exception {
 		String wineJson = json(new Wine("Ygay", 24, "Globus"));
-        this.mockMvc.perform(post("/wine")
+        this.mockMvc.perform(post("/api/wine")
                 .contentType(contentType)
                 .content(wineJson))
                 .andExpect(status().isCreated());
