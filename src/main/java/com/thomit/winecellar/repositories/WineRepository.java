@@ -8,7 +8,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.thomit.winecellar.models.Wine;
 
-@RepositoryRestResource(collectionResourceRel="wine", path="wine")
+@RepositoryRestResource(collectionResourceRel="wine", path="/wine")
 public interface WineRepository extends JpaRepository<Wine, Long> {
 
 	List<Wine> findByName(@Param("name") String name);
