@@ -17,11 +17,7 @@ public class WineCellarResourceServerConfiguration extends
 	public void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
-				.requestMatchers()
-				.antMatchers("/oauth/users/**", "/oauth/clients/**").and()
-				.authorizeRequests().anyRequest().authenticated().and()
-				.antMatcher("/api/**").authorizeRequests().anyRequest()
-				.authenticated();
+				.authorizeRequests().anyRequest().authenticated();
 	}
 
 }

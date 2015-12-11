@@ -23,6 +23,9 @@ public class WineCellarSecurityConfiguration extends
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception{
+	
+		http.authorizeRequests().antMatchers("/**").permitAll();
+		/*
 		http.authorizeRequests()
 		.antMatchers("/api/**", "/oauth/**")
 		.permitAll()
@@ -30,6 +33,7 @@ public class WineCellarSecurityConfiguration extends
 		.authenticated()
 		.and()
 		.csrf().disable();
+		*/
 	}
 	
 }
