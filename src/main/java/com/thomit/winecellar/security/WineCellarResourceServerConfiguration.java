@@ -7,7 +7,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 
+@Configuration
 @Order(2)
+@EnableResourceServer
 public class WineCellarResourceServerConfiguration extends
 		ResourceServerConfigurerAdapter {
 

@@ -17,9 +17,14 @@ public class WineCellarSecurityConfiguration extends
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		//http.authorizeRequests().anyRequest().permitAll().and().csrf().disable();
+		
+		
 		http.formLogin().permitAll()
 			.and().requestMatchers().antMatchers("/login", "/oauth/authorize", "/oauth/confirm_access")
 			.and().authorizeRequests().anyRequest().authenticated();
+		 
+	
 	}
 	
 }
