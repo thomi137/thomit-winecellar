@@ -22,6 +22,20 @@ public class WineCellarAuthorizationServerConfiguration extends
 	}
 	*/
 	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
+	
+	
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints)
+			throws Exception {
+		endpoints.authenticationManager(authenticationManager);
+		
+	}
+
+
+
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients)
 			throws Exception {
