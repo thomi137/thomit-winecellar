@@ -17,7 +17,9 @@ public class WineCellarResourceServerConfiguration extends
 	public void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
-				.authorizeRequests().anyRequest().authenticated();
-	}
+				.authorizeRequests()
+				.antMatchers("/user/**").access("#oauth2.clientHasRole('CLIENT_MOBILE_APP') and !hasRole('ROLE_USER') ");
+		}
 
 }
+//#oauth2.isClient()
