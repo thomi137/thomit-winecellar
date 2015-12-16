@@ -1,6 +1,5 @@
 package com.thomit.winecellar.models;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,30 +7,40 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "clients")
-public class Client {
+@Table(name = "accounts")
+public class Account {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	
-	String clientId;
-	String clientSecret;
+	String accountId;
+	String accountSecret;
 	String resourceIds;
 	String scopes;
 	String grantTypes;
+	String redirectUris;
 	String authorities;
+	
+	public Account(){
+		
+	}
 
-	public Client(String clientId, String clientSecret, String resourceIds,
-			String scopes, String grantTypes, String authorities) {
-		this.clientId = clientId;
-		this.clientSecret = clientSecret;
+	public Account(String clientId, String clientSecret, String resourceIds,
+			String scopes, String grantTypes, String redirectUris, String authorities) {
+		this.accountId = clientId;
+		this.accountSecret = clientSecret;
 		this.resourceIds = resourceIds;
 		this.scopes = scopes;
 		this.grantTypes = grantTypes;
 		this.authorities = authorities;
 	}
-
+	
+	public Account(String clientId, String clientSecret, String resourceIds,
+			String scopes, String grantTypes, String authorities) {
+		this(clientId, clientSecret, resourceIds, scopes, grantTypes, "", authorities);
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -40,20 +49,20 @@ public class Client {
 		this.id = id;
 	}
 
-	public String getClientId() {
-		return clientId;
+	public String getAccountId() {
+		return accountId;
 	}
 
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
-	public String getClientSecret() {
-		return clientSecret;
+	public String getAccountSecret() {
+		return accountSecret;
 	}
 
-	public void setClientSecret(String clientSecret) {
-		this.clientSecret = clientSecret;
+	public void setAccountSecret(String accountSecret) {
+		this.accountSecret = accountSecret;
 	}
 
 	public String getResourceIds() {
@@ -78,6 +87,14 @@ public class Client {
 
 	public void setGrantTypes(String grantTypes) {
 		this.grantTypes = grantTypes;
+	}
+
+	public String getRedirectUris() {
+		return redirectUris;
+	}
+
+	public void setRedirectUris(String redirectUris) {
+		this.redirectUris = redirectUris;
 	}
 
 	public String getAuthorities() {
