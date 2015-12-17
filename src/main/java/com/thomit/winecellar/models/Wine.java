@@ -13,11 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.rest.core.annotation.RestResource;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -50,6 +52,7 @@ public class Wine {
 	@ManyToOne
 	@CreatedBy
 	@JsonIgnore
+	@RestResource(exported = false)
 	private Account account;
 	
 	public Wine(){
@@ -138,7 +141,5 @@ public class Wine {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
-	
-	
 	
 }
