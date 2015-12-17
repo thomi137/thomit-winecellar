@@ -18,7 +18,10 @@ public class WineCellarResourceServerConfiguration extends
 		http.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
 				.authorizeRequests()
-				.antMatchers("/user/**").access("#oauth2.clientHasRole('CLIENT_MOBILE_APP') and !hasRole('ROLE_USER') ");
+				.antMatchers("/user/**").access("#oauth2.clientHasRole('CLIENT_MOBILE_APP') and !hasRole('ROLE_USER') ")
+				.and()
+				.authorizeRequests()
+				.antMatchers("/wine/**").access("#oauth2.clientHasRole('CLIENT_MOBILE_APP') and hasRole('ROLE_USER')");
 		}
 
 }

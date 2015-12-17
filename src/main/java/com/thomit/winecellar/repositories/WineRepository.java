@@ -1,6 +1,7 @@
 package com.thomit.winecellar.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
@@ -13,5 +14,7 @@ public interface WineRepository extends JpaRepository<Wine, Long> {
 
 	List<Wine> findByName(@Param("name") String name);
 	List<Wine> findByAccountAccountId(@Param("accountId") String accountId);
+	
+	Optional<Wine> findByIdAndAccountAccountId(Long id, String accountId);
 	
 }
