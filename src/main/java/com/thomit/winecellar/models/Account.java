@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "accounts")
 public class Account {
@@ -15,11 +17,23 @@ public class Account {
 	Long id;
 	
 	String accountId;
+	
+	@JsonIgnore
 	String accountSecret;
+	
+	@JsonIgnore
 	String resourceIds;
+	
+	@JsonIgnore
 	String scopes;
+	
+	@JsonIgnore
 	String grantTypes;
+	
+	@JsonIgnore
 	String redirectUris;
+	
+	@JsonIgnore
 	String authorities;
 	
 	public Account(){

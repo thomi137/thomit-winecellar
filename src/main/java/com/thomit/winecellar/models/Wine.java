@@ -13,10 +13,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -47,6 +49,7 @@ public class Wine {
 	
 	@ManyToOne
 	@CreatedBy
+	@JsonIgnore
 	private Account account;
 	
 	public Wine(){
@@ -127,6 +130,7 @@ public class Wine {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
+	@JsonIgnore
 	public Account getAccount() {
 		return account;
 	}
