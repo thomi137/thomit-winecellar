@@ -12,5 +12,6 @@ import com.thomit.winecellar.models.Wine;
 public interface WineRepository extends JpaRepository<Wine, Long> {
 
 	List<Wine> findByName(@Param("name") String name);
+	List<Wine> findByAccountAccountId(@Param("accountId") String accountId);
 	
 }
