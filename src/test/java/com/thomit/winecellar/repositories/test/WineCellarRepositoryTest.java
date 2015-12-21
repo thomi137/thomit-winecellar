@@ -16,14 +16,30 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.http.MockHttpOutputMessage;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.util.NestedServletException;
 
 import com.thomit.winecellar.WineCellarApp;
+import com.thomit.winecellar.models.Account;
 import com.thomit.winecellar.models.Wine;
+import com.thomit.winecellar.repositories.AccountRepository;
 import com.thomit.winecellar.repositories.WineRepository;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -43,9 +59,21 @@ public class WineCellarRepositoryTest {
 
 	@Autowired
 	private WineRepository wineRepository;
+	
+	@Autowired
+	private AccountRepository accountRepository;
 
 	@Autowired
 	private WebApplicationContext webAppContext;
+	
+	@Autowired
+	private PasswordEncoder encoder;
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	protected UserDetailsService userDetailsService;
 
 	private MockMvc mockMvc;
 
@@ -54,6 +82,10 @@ public class WineCellarRepositoryTest {
 	private HttpMessageConverter mappingJackson2HttpMessageConverter;
 	
 	private MediaType contentType = new MediaType("application", "hal+json", Charset.forName("UTF-8"));
+	
+	private String userId = "user";
+	
+	private String rawPassword = "secret";
 	
 	@Autowired
     void setConverters(HttpMessageConverter<?>[] converters) {
@@ -64,44 +96,66 @@ public class WineCellarRepositoryTest {
         Assert.assertNotNull("the JSON message converter must not be null",
                 this.mappingJackson2HttpMessageConverter);
     }
+	
+	
+	
 
 	@Before
 	public void setUp() throws Exception {
+		
+		Account testAccount = new Account(userId, rawPassword, null, null, null, null, "ROLE_USER");
+				
 		this.mockMvc = webAppContextSetup(webAppContext).build();
-		this.wineRepository.deleteAllInBatch();
-
-		Wine testWine = createTestWine();
+		this.wineRepository.deleteAll();
+		this.accountRepository.deleteAll();
+		Account wineAccount = this.accountRepository.save(testAccount);
+		Wine testWine = createTestWine(wineAccount);
 		this.wineList.add(this.wineRepository.save(testWine));
+		
+		UsernamePasswordAuthenticationToken principal = this.getPrincipal(userId);
+		SecurityContextHolder.getContext().setAuthentication(principal);
+	
 
 	}
 
 	@Test
 	public void testWineEndpointGetStatusOk() throws Exception {
-		this.mockMvc.perform(get("/wine"))
+		
+				
+		this.mockMvc.perform(get("/wine/" + userId +"/wines"))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
 	public void testWineFound() throws Exception {
-		this.mockMvc.perform(get("/wine/" + this.wineList.get(0).getId()).contentType(contentType).accept(contentType))
+		this.mockMvc.perform(get("/wine/" + userId +"/wines/" + this.wineList.get(0).getId())
+				.contentType(contentType).accept(contentType))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(contentType))
-		.andExpect(jsonPath("$.name", is(this.wineList.get(0).getName())))
-		.andExpect(jsonPath("$.producer", is(this.wineList.get(0).getProducer())))
-		.andExpect(jsonPath("$.price", is(this.wineList.get(0).getPrice().doubleValue())))
-		.andExpect(jsonPath("$.merchant", is(this.wineList.get(0).getMerchant())));
+		.andExpect(jsonPath("$.wine.name", is(this.wineList.get(0).getName())))
+		.andExpect(jsonPath("$.wine.producer", is(this.wineList.get(0).getProducer())))
+		.andExpect(jsonPath("$.wine.price", is(this.wineList.get(0).getPrice().doubleValue())))
+		.andExpect(jsonPath("$.wine.merchant", is(this.wineList.get(0).getMerchant())));
 	}
 	
-	@Test
+	@Test(expected = NestedServletException.class)
 	public void createWine() throws Exception {
 		String wineJson = json(new Wine("Ygay", 24, "Globus"));
-        this.mockMvc.perform(post("/wine")
+        this.mockMvc.perform(post("/wine/" + userId +"/wines")
                 .contentType(contentType)
                 .content(wineJson))
-                .andExpect(status().isCreated());
+                .andExpect(status().is4xxClientError());
 	}
 
-	private Wine createTestWine() {
+
+	
+    protected String json(Object o) throws IOException {
+        MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
+        this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
+        return mockHttpOutputMessage.getBodyAsString();
+    }
+    
+	private Wine createTestWine(Account testAccount) {
 		Wine wine = new Wine();
 		wine.setName("TestWine");
 		wine.setYear(2012);
@@ -111,13 +165,36 @@ public class WineCellarRepositoryTest {
 		wine.setRegion("Bio Bio");
 		wine.setProducer("Viña Errazuriz");
 		wine.setMerchant("Mövenpick");
+		wine.setAccount(testAccount);
 		return wine;
 	}
 	
-    protected String json(Object o) throws IOException {
-        MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
-        this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
-        return mockHttpOutputMessage.getBodyAsString();
-    }
+	protected UsernamePasswordAuthenticationToken getPrincipal(String username){
+		UserDetails user = this.userDetailsService.loadUserByUsername(username);
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+		return authentication;
+	
+	}
+	
+	private static class MockSecurityContext implements SecurityContext{
+
+		private static final long serialVersionUID = 1L;
+		private Authentication authentication;
+		
+		public MockSecurityContext(Authentication authentication){
+			this.authentication = authentication;
+		}
+		
+		@Override
+		public Authentication getAuthentication() {
+			return this.authentication;
+		}
+
+		@Override
+		public void setAuthentication(Authentication authentication) {
+			this.authentication = authentication;
+		}
+		
+	}
 
 }

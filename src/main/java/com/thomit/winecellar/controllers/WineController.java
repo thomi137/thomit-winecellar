@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.thomit.winecellar.models.Account;
 import com.thomit.winecellar.models.Wine;
 import com.thomit.winecellar.repositories.AccountRepository;
 import com.thomit.winecellar.repositories.WineRepository;
@@ -51,6 +52,9 @@ public class WineController {
 	@PreAuthorize("#oauth2.hasScope('write') and hasRole('ROLE_USER') and #userId == authentication.name")
 	@RequestMapping(method = RequestMethod.POST)
 	ResponseEntity<?> addWine(@PathVariable String userId, @RequestBody Wine newWine){
+		
+		Account userAccount = accountRepository.findByAccountId(userId).get();
+		newWine.setAccount(userAccount);
 		
 		Wine addedWine = wineRepository.save(newWine);
 		HttpHeaders httpHeaders = new HttpHeaders();
