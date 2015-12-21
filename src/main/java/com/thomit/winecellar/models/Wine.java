@@ -52,10 +52,15 @@ public class Wine {
 	private Date lastModifiedDate;
 	
 	@ManyToOne
-	@CreatedBy
 	@JsonIgnore
 	@RestResource(exported = false)
 	private Account account;
+
+	@ManyToOne
+	@JsonIgnore
+	@RestResource(exported = false)
+	@CreatedBy
+	private Account createdBy;
 	
 	public Wine(){
 	}

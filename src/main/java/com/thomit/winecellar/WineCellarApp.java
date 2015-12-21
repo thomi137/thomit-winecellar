@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import com.thomit.winecellar.utils.SecurityEvaluationContextExtension;
+
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableHypermediaSupport(type = { HypermediaType.HAL })
@@ -31,6 +33,11 @@ public class WineCellarApp {
     @Bean
     RelProvider getRelProvider(){
     	return new EvoInflectorRelProvider();
+    }
+    
+    @Bean
+    public SecurityEvaluationContextExtension securityEvaluationContextExtension(){
+        return new SecurityEvaluationContextExtension();
     }
  
 }
