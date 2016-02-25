@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -54,7 +55,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WineCellarApp.class)
 @WebAppConfiguration
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 public class WineCellarRepositoryTest {
 
 	@Autowired
@@ -72,9 +73,6 @@ public class WineCellarRepositoryTest {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	@Autowired
-	protected UserDetailsService userDetailsService;
-
 	private MockMvc mockMvc;
 
 	private List<Wine> wineList = new ArrayList<>();
@@ -112,7 +110,7 @@ public class WineCellarRepositoryTest {
 		Wine testWine = createTestWine(wineAccount);
 		this.wineList.add(this.wineRepository.save(testWine));
 		
-		UsernamePasswordAuthenticationToken principal = this.getPrincipal(userId);
+		UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken(userId, rawPassword, AuthorityUtils.createAuthorityList("ROLE_USER"));
 		SecurityContextHolder.getContext().setAuthentication(principal);
 	
 
@@ -167,13 +165,6 @@ public class WineCellarRepositoryTest {
 		wine.setMerchant("Mövenpick");
 		wine.setAccount(testAccount);
 		return wine;
-	}
-	
-	protected UsernamePasswordAuthenticationToken getPrincipal(String username){
-		UserDetails user = this.userDetailsService.loadUserByUsername(username);
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
-		return authentication;
-	
 	}
 	
 	private static class MockSecurityContext implements SecurityContext{

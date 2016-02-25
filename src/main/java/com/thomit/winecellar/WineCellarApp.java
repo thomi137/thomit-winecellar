@@ -11,12 +11,16 @@ import org.springframework.hateoas.core.EvoInflectorRelProvider;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.thomit.winecellar.utils.SecurityEvaluationContextExtension;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableAuthorizationServer
+@EnableResourceServer
 @EnableHypermediaSupport(type = { HypermediaType.HAL })
 public class WineCellarApp {
 
@@ -27,7 +31,6 @@ public class WineCellarApp {
     @Bean
     PasswordEncoder passwordEncoder(){
     	return new BCryptPasswordEncoder();
-    	
     }
     
     @Bean

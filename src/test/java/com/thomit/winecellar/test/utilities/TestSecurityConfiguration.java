@@ -1,4 +1,4 @@
-package com.thomit.winecellar.security;
+package com.thomit.winecellar.test.utilities;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +18,8 @@ import com.thomit.winecellar.exceptions.UsernameNotFoundException;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Profile({"dev", "production"})
-public class WineCellarSecurityConfiguration extends
+@Profile("test")
+public class TestSecurityConfiguration extends
 		WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -31,8 +31,7 @@ public class WineCellarSecurityConfiguration extends
 	@Autowired
 	public void globalUserDetails(AuthenticationManagerBuilder auth)
 			throws Exception {
-		auth.userDetailsService(userDetailsService()).passwordEncoder(
-				passwordEncoder);
+		auth.inMemoryAuthentication().withUser("test-user").password("test-user-secret").authorities("ROLE_USER");
 	}
 
 	@Override
@@ -46,17 +45,6 @@ public class WineCellarSecurityConfiguration extends
 						"/oauth/confirm_access").and().authorizeRequests()
 				.anyRequest().authenticated();
 
-	}
-
-	@Bean
-	protected UserDetailsService userDetailsService() {
-		return (username) -> accountRepository
-				.findByAccountId(username)
-				.map(a -> new User(a.getAccountId(), a.getAccountSecret(),
-						true, true, true, true, AuthorityUtils
-								.commaSeparatedStringToAuthorityList(a
-										.getAuthorities())))
-				.orElseThrow(() -> new UsernameNotFoundException(username));
 	}
 
 }
